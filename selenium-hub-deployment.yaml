@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: selenium-hub
+  name: selenium-hub
+  namespace: selenium-conference-demo
+spec:
+  replicas: 1
+  # Keep record of 3 revisions for rollback
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: selenium-hub
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: selenium-hub
+    spec:
+      containers:
+      - name: selenium-hub
+        image: selenium/hub
+        ports:
+          - containerPort: 4444 
+        livenessProbe:
+          httpGet:
+            path: /grid/console
+            port: 4444
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /grid/console
+            port: 4444
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+          requests:
+            cpu: 125m
+            memory: 512Mi

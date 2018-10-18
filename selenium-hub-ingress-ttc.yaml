@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: selenium-hub
+  name: selenium-hub-ingress
+  namespace: selenium-conference-2018-prod
+spec:
+  rules:
+  - host: demo-selenium.us-central-1.core.k8s.tgt
+    http:
+      paths:
+      - backend:
+          serviceName: selenium-hub
+          servicePort: 4444
+        path: /
